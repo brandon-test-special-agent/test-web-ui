@@ -2,10 +2,9 @@ const config = {
   plugins: {
     "@tailwindcss/postcss": {
       sources: [
-        {
-          pattern: "./app/**/*.{js,ts,jsx,tsx}",
-          negated: false,
-        },
+        "./app/**/*.{js,ts,jsx,tsx,mdx}",
+        "./components/**/*.{js,ts,jsx,tsx,mdx}",
+        "./src/**/*.{js,ts,jsx,tsx,mdx}",
       ],
     },
   },
