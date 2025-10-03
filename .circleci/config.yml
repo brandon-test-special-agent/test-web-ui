@@ -26,6 +26,15 @@ jobs:
           name: Run Linting
           command: pnpm lint
 
+  test:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - run:
+          name: Run Tests
+          command: pnpm test
+
   build:
     docker:
       - image: cimg/node:20.0
@@ -40,4 +49,7 @@ workflows:
   lint-and-build:
     jobs:
       - lint
-      - build
+      - test
+      - build:
+          requires:
+            - test
