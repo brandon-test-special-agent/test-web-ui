@@ -36,7 +36,8 @@ jobs:
           command: |
             mkdir -p test-results
             TEST_FILES=$(circleci tests glob "src/**/*.{test,spec}.{js,ts,jsx,tsx}")
-            echo "$TEST_FILES" | circleci tests run --command="xargs -n 1 pnpm test:run -- --reporter=junit --outputFile=test-results/junit.xml" --verbose
+            export JEST_JUNIT_OUTPUT=test-results/junit.xml
+            echo "$TEST_FILES" | circleci tests run --command="xargs -n 1 pnpm test:run" --verbose
       - store_test_results:
           path: test-results
       - store_artifacts:
