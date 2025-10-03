@@ -32,11 +32,11 @@ jobs:
       - checkout
       - install-deps
       - run:
-          name: Create test results directory
-          command: mkdir -p test-results
-      - run:
-          name: Run Tests
-          command: pnpm test
+          name: Run tests (split) with pnpm and store JUnit
+          command: |
+            mkdir -p test-results
+            TEST_FILES=$(circleci tests glob "src/**/*.{test,spec}.{js,ts,jsx,tsx}")
+            echo "$TEST_FILES" | circleci tests run --command="xargs -n 1 pnpm test:run -- --reporter=junit --outputFile=test-results/junit.xml" --verbose
       - store_test_results:
           path: test-results
       - store_artifacts:
