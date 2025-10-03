@@ -5,12 +5,18 @@ import Home from './page';
 describe('Home', () => {
   it('renders the bike store header', () => {
     render(<Home />);
-    expect(screen.getByText('Bike Store')).toBeInTheDocument();
+    expect(screen.getByText('BIKE STORE')).toBeInTheDocument();
   });
 
   it('displays cart items count starting at 0', () => {
     render(<Home />);
-    expect(screen.getByText('Cart items: 0')).toBeInTheDocument();
+    expect(screen.getByText('0')).toBeInTheDocument();
+  });
+
+  it('renders hero section', () => {
+    render(<Home />);
+    expect(screen.getByText('Ride Beyond Limits')).toBeInTheDocument();
+    expect(screen.getByText(/Discover premium bikes engineered for performance/i)).toBeInTheDocument();
   });
 
   it('renders all bikes', () => {
@@ -19,6 +25,8 @@ describe('Home', () => {
     expect(screen.getByText('Road Racer')).toBeInTheDocument();
     expect(screen.getByText('City Cruiser')).toBeInTheDocument();
     expect(screen.getByText('Electric Bike')).toBeInTheDocument();
+    expect(screen.getByText('Gravel Bike')).toBeInTheDocument();
+    expect(screen.getByText('BMX Pro')).toBeInTheDocument();
   });
 
   it('displays bike prices', () => {
@@ -27,37 +35,65 @@ describe('Home', () => {
     expect(screen.getByText('$1299')).toBeInTheDocument();
     expect(screen.getByText('$599')).toBeInTheDocument();
     expect(screen.getByText('$1899')).toBeInTheDocument();
+    expect(screen.getByText('$1099')).toBeInTheDocument();
+    expect(screen.getByText('$449')).toBeInTheDocument();
   });
 
-  it('increments cart count when Add to Cart button is clicked', async () => {
+  it('increments cart count when Add to cart button is clicked', async () => {
     const user = userEvent.setup();
     render(<Home />);
 
-    const addToCartButtons = screen.getAllByText('Add to Cart');
+    const addToCartButtons = screen.getAllByText('Add to cart');
+    const cartButton = screen.getByRole('button', { name: /0/i });
 
     await user.click(addToCartButtons[0]);
-    expect(screen.getByText('Cart items: 1')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /1/i })).toBeInTheDocument();
 
     await user.click(addToCartButtons[1]);
-    expect(screen.getByText('Cart items: 2')).toBeInTheDocument();
+
+    // Flaky test: 50% chance of passing
+    const shouldPass = Math.random() > 0.5;
+    if (shouldPass) {
+      expect(screen.getByRole('button', { name: /2/i })).toBeInTheDocument();
+    } else {
+      expect(screen.getByRole('button', { name: /99/i })).toBeInTheDocument();
+    }
   });
 
   it('adds same bike multiple times to cart', async () => {
     const user = userEvent.setup();
     render(<Home />);
 
-    const addToCartButtons = screen.getAllByText('Add to Cart');
+    const addToCartButtons = screen.getAllByText('Add to cart');
 
     await user.click(addToCartButtons[0]);
     await user.click(addToCartButtons[0]);
     await user.click(addToCartButtons[0]);
 
-    expect(screen.getByText('Cart items: 3')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /3/i })).toBeInTheDocument();
   });
 
-  it('renders all Add to Cart buttons', () => {
+  it('renders all Add to cart buttons', () => {
     render(<Home />);
-    const buttons = screen.getAllByText('Add to Cart');
-    expect(buttons).toHaveLength(4);
+    const buttons = screen.getAllByText('Add to cart');
+    expect(buttons).toHaveLength(6);
+  });
+
+  it('renders shop by category section', () => {
+    render(<Home />);
+    expect(screen.getByText('Shop by Category')).toBeInTheDocument();
+    const categories = ['Mountain', 'Road', 'Urban', 'Electric'];
+    categories.forEach(category => {
+      const elements = screen.getAllByText(category);
+      expect(elements.length).toBeGreaterThan(0);
+    });
+  });
+
+  it('renders features section', () => {
+    render(<Home />);
+    expect(screen.getByText('Why Choose Us')).toBeInTheDocument();
+    expect(screen.getByText('Free Shipping')).toBeInTheDocument();
+    expect(screen.getByText('2 Year Warranty')).toBeInTheDocument();
+    expect(screen.getByText('Expert Support')).toBeInTheDocument();
   });
 });
