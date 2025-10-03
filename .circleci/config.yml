@@ -32,8 +32,16 @@ jobs:
       - checkout
       - install-deps
       - run:
+          name: Create test results directory
+          command: mkdir -p test-results
+      - run:
           name: Run Tests
           command: pnpm test
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+          destination: test-results
 
   build:
     docker:
