@@ -1,7 +1,12 @@
 const config = {
   plugins: {
     "@tailwindcss/postcss": {
-      base: "./app/**/*.{js,ts,jsx,tsx}",
+      sources: [
+        {
+          pattern: "./app/**/*.{js,ts,jsx,tsx}",
+          negated: false,
+        },
+      ],
     },
   },
 };
