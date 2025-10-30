@@ -55,13 +55,6 @@ export default function Home() {
     setCart([...cart, bikeId]);
   };
 
-  const getTotalPrice = () => {
-    return cart.reduce((total, bikeId) => {
-      const bike = bikes.find(b => b.id === bikeId);
-      return total + (bike?.price || 0);
-    }, 0);
-  };
-
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}

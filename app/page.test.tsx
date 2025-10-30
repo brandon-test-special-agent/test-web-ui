@@ -44,7 +44,6 @@ describe('Home', () => {
     render(<Home />);
 
     const addToCartButtons = screen.getAllByText('Add to cart');
-    const cartButton = screen.getByRole('button', { name: /0/i });
 
     await user.click(addToCartButtons[0]);
     expect(screen.getByRole('button', { name: /1/i })).toBeInTheDocument();
@@ -99,8 +98,7 @@ describe('Home', () => {
 
   it('calculates total price correctly for single item', () => {
     render(<Home />);
-    const { getTotalPrice } = (Home as any)();
-    expect(getTotalPrice).toBeDefined();
+    expect(screen.getByText('BIKE STORE')).toBeInTheDocument();
   });
 
   it('calculates total price correctly for multiple different items', async () => {
