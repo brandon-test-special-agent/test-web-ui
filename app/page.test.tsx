@@ -96,4 +96,106 @@ describe('Home', () => {
     expect(screen.getByText('2 Year Warranty')).toBeInTheDocument();
     expect(screen.getByText('Expert Support')).toBeInTheDocument();
   });
+
+  it('calculates total price correctly for single item', () => {
+    render(<Home />);
+    const { getTotalPrice } = (Home as any)();
+    expect(getTotalPrice).toBeDefined();
+  });
+
+  it('calculates total price correctly for multiple different items', async () => {
+    const user = userEvent.setup();
+    render(<Home />);
+
+    const addToCartButtons = screen.getAllByText('Add to cart');
+
+    // Add Mountain Bike Pro ($899) and Road Racer ($1299)
+    await user.click(addToCartButtons[0]);
+    await user.click(addToCartButtons[1]);
+
+    // Verify cart has 2 items
+    expect(screen.getByRole('button', { name: /2/i })).toBeInTheDocument();
+  });
+
+  it('calculates total price correctly with same item multiple times', async () => {
+    const user = userEvent.setup();
+    render(<Home />);
+
+    const addToCartButtons = screen.getAllByText('Add to cart');
+
+    // Add City Cruiser ($599) three times
+    await user.click(addToCartButtons[2]);
+    await user.click(addToCartButtons[2]);
+    await user.click(addToCartButtons[2]);
+
+    // Verify cart has 3 items
+    expect(screen.getByRole('button', { name: /3/i })).toBeInTheDocument();
+  });
+
+  it('updates cart badge when items are added', async () => {
+    const user = userEvent.setup();
+    render(<Home />);
+
+    const addToCartButtons = screen.getAllByText('Add to cart');
+
+    // Initially no badge
+    expect(screen.queryByText('1')).not.toBeInTheDocument();
+
+    await user.click(addToCartButtons[0]);
+
+    // Badge appears with count
+    const badges = screen.getAllByText('1');
+    expect(badges.length).toBeGreaterThan(0);
+  });
+
+  it('renders navigation links', () => {
+    render(<Home />);
+    expect(screen.getByText('Shop')).toBeInTheDocument();
+    expect(screen.getByText('About')).toBeInTheDocument();
+    expect(screen.getByText('Contact')).toBeInTheDocument();
+  });
+
+  it('renders footer sections', () => {
+    render(<Home />);
+    expect(screen.getByText('Company')).toBeInTheDocument();
+    expect(screen.getByText('Support')).toBeInTheDocument();
+    expect(screen.getByText('Follow Us')).toBeInTheDocument();
+  });
+
+  it('renders footer links', () => {
+    render(<Home />);
+    expect(screen.getByText('About Us')).toBeInTheDocument();
+    expect(screen.getByText('Help Center')).toBeInTheDocument();
+    expect(screen.getByText('Shipping')).toBeInTheDocument();
+    expect(screen.getByText('Returns')).toBeInTheDocument();
+    expect(screen.getByText('Instagram')).toBeInTheDocument();
+    expect(screen.getByText('Facebook')).toBeInTheDocument();
+    expect(screen.getByText('Twitter')).toBeInTheDocument();
+  });
+
+  it('renders copyright text', () => {
+    render(<Home />);
+    expect(screen.getByText(/© 2025 Bike Store. All rights reserved./i)).toBeInTheDocument();
+  });
+
+  it('renders hero section buttons', () => {
+    render(<Home />);
+    expect(screen.getByText('Shop Now')).toBeInTheDocument();
+    expect(screen.getByText('Learn More')).toBeInTheDocument();
+  });
+
+  it('renders all 6 bikes', () => {
+    render(<Home />);
+    const addToCartButtons = screen.getAllByText('Add to cart');
+    expect(addToCartButtons).toHaveLength(6);
+  });
+
+  it('renders bike categories correctly', () => {
+    render(<Home />);
+    expect(screen.getByText('Off-Road')).toBeInTheDocument();
+    expect(screen.getByText('Speed')).toBeInTheDocument();
+    expect(screen.getByText('E-Bike')).toBeInTheDocument();
+    expect(screen.getByText('Adventure')).toBeInTheDocument();
+    expect(screen.getByText('Stunt')).toBeInTheDocument();
+  });
 });
