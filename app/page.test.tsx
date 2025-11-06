@@ -44,20 +44,12 @@ describe('Home', () => {
     render(<Home />);
 
     const addToCartButtons = screen.getAllByText('Add to cart');
-    const cartButton = screen.getByRole('button', { name: /0/i });
 
     await user.click(addToCartButtons[0]);
     expect(screen.getByRole('button', { name: /1/i })).toBeInTheDocument();
 
     await user.click(addToCartButtons[1]);
-
-    // Flaky test: 50% chance of passing
-    const shouldPass = Math.random() > 0.5;
-    if (shouldPass) {
-      expect(screen.getByRole('button', { name: /2/i })).toBeInTheDocument();
-    } else {
-      expect(screen.getByRole('button', { name: /99/i })).toBeInTheDocument();
-    }
+    expect(screen.getByRole('button', { name: /2/i })).toBeInTheDocument();
   });
 
   it('adds same bike multiple times to cart', async () => {
