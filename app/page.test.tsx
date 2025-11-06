@@ -50,14 +50,7 @@ describe('Home', () => {
     expect(screen.getByRole('button', { name: /1/i })).toBeInTheDocument();
 
     await user.click(addToCartButtons[1]);
-
-    // Flaky test: 50% chance of passing
-    const shouldPass = Math.random() > 0.5;
-    if (shouldPass) {
-      expect(screen.getByRole('button', { name: /2/i })).toBeInTheDocument();
-    } else {
-      expect(screen.getByRole('button', { name: /99/i })).toBeInTheDocument();
-    }
+    expect(screen.getByRole('button', { name: /2/i })).toBeInTheDocument();
   });
 
   it('adds same bike multiple times to cart', async () => {
