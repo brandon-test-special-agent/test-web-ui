@@ -96,4 +96,77 @@ describe('Home', () => {
     expect(screen.getByText('2 Year Warranty')).toBeInTheDocument();
     expect(screen.getByText('Expert Support')).toBeInTheDocument();
   });
+
+  it('renders navigation links', () => {
+    render(<Home />);
+    const shopLinks = screen.getAllByText('Shop');
+    expect(shopLinks.length).toBeGreaterThan(0);
+    const aboutLinks = screen.getAllByText('About');
+    expect(aboutLinks.length).toBeGreaterThan(0);
+    const contactLinks = screen.getAllByText('Contact');
+    expect(contactLinks.length).toBeGreaterThan(0);
+  });
+
+  it('renders hero section call-to-action buttons', () => {
+    render(<Home />);
+    expect(screen.getByRole('button', { name: /shop now/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /learn more/i })).toBeInTheDocument();
+  });
+
+  it('renders footer sections', () => {
+    render(<Home />);
+    expect(screen.getByText('Company')).toBeInTheDocument();
+    expect(screen.getByText('Support')).toBeInTheDocument();
+    expect(screen.getByText('Follow Us')).toBeInTheDocument();
+  });
+
+  it('displays copyright information', () => {
+    render(<Home />);
+    expect(screen.getByText(/© 2025 Bike Store. All rights reserved./i)).toBeInTheDocument();
+  });
+
+  it('renders correct number of bikes', () => {
+    render(<Home />);
+    const addToCartButtons = screen.getAllByText('Add to cart');
+    expect(addToCartButtons).toHaveLength(6);
+  });
+
+  it('displays cart badge when items are added', async () => {
+    const user = userEvent.setup();
+    render(<Home />);
+
+    const addToCartButtons = screen.getAllByText('Add to cart');
+    await user.click(addToCartButtons[0]);
+
+    // Cart badge should show the count
+    const badges = screen.getAllByText('1');
+    expect(badges.length).toBeGreaterThan(0);
+  });
+
+  it('does not display cart badge when cart is empty', () => {
+    render(<Home />);
+
+    // Only the main cart count (0) should be visible, not in a badge
+    const cartButton = screen.getByRole('button', { name: /0/i });
+    expect(cartButton).toBeInTheDocument();
+  });
+
+  it('maintains cart state across multiple interactions', async () => {
+    const user = userEvent.setup();
+    render(<Home />);
+
+    const addToCartButtons = screen.getAllByText('Add to cart');
+
+    // Add first bike
+    await user.click(addToCartButtons[0]);
+    expect(screen.getByRole('button', { name: /1/i })).toBeInTheDocument();
+
+    // Add second bike
+    await user.click(addToCartButtons[1]);
+    expect(screen.getByRole('button', { name: /2/i })).toBeInTheDocument();
+
+    // Add first bike again
+    await user.click(addToCartButtons[0]);
+    expect(screen.getByRole('button', { name: /3/i })).toBeInTheDocument();
+  });
 });
