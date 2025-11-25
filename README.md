@@ -4,6 +4,10 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 This is a modern web application built with Next.js, featuring server-side rendering, optimized performance, and the latest React features. The project leverages Next.js's powerful framework capabilities to deliver a fast, scalable, and maintainable application.
 
+## Address
+
+123 Main Street, San Francisco, CA 94102
+
 ## Getting Started
 
 First, run the development server:
