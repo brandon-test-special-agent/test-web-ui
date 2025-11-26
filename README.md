@@ -14,6 +14,29 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Architecture
+
+This Next.js application follows the App Router architecture pattern:
+
+### Directory Structure
+- **`app/`**: Contains the application routes and layouts using Next.js 13+ App Router
+  - `page.tsx`: Main landing page component
+  - `layout.tsx`: Root layout with global configurations
+- **`public/`**: Static assets served directly
+- **`src/`**: Additional source code (if applicable)
+
+### Key Technologies
+- **Next.js 14+**: React framework with server-side rendering and static generation
+- **React**: UI component library
+- **TypeScript**: Type-safe JavaScript
+- **Geist Font**: Optimized font loading via `next/font`
+
+### Rendering Strategy
+The application utilizes Next.js App Router capabilities including:
+- Server Components by default for optimal performance
+- Client Components where interactivity is needed
+- Automatic code splitting and lazy loading
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
