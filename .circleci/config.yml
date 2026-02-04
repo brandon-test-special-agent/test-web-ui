@@ -17,27 +17,38 @@ commands:
           override-ci-command: pnpm install --no-frozen-lockfile
 
 jobs:
-  lint:
+  setup:
     executor: node-executor
     steps:
       - checkout
       - install-deps
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  lint:
+    executor: node-executor
+    steps:
+      - attach_workspace:
+          at: .
       - run:
           name: Run Linting
           command: pnpm lint
 
   test:
     executor: node-executor
+    parallelism: 4
     steps:
-      - checkout
-      - install-deps
+      - attach_workspace:
+          at: .
       - run:
           name: Run tests (split) with pnpm and store JUnit
           command: |
             mkdir -p test-results
-            TEST_FILES=$(circleci tests glob "src/**/*.{test,spec}.{js,ts,jsx,tsx}")
+            TEST_FILES=$(circleci tests glob "src/**/*.{test,spec}.{js,ts,jsx,tsx}" | circleci tests split --split-by=timings)
             export JEST_JUNIT_OUTPUT=test-results/junit.xml
-            echo "$TEST_FILES" | circleci tests run --command="xargs -n 1 pnpm test:run" --verbose
+            echo "$TEST_FILES" | xargs pnpm test:run --
       - store_test_results:
           path: test-results
       - store_artifacts:
@@ -45,11 +56,11 @@ jobs:
           destination: test-results
 
   build:
-    docker:
-      - image: cimg/node:20.0
+    executor: node-executor
+    resource_class: medium+
     steps:
-      - checkout
-      - install-deps
+      - attach_workspace:
+          at: .
       - run:
           name: Build application
           command: pnpm run build
@@ -57,8 +68,14 @@ jobs:
 workflows:
   lint-and-build:
     jobs:
-      - lint
-      - test
+      - setup
+      - lint:
+          requires:
+            - setup
+      - test:
+          requires:
+            - setup
       - build:
           requires:
+            - lint
             - test
