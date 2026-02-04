@@ -3,7 +3,24 @@
 import { useState } from 'react';
 import BikeCard from './components/BikeCard';
 
-const bikes = [
+/**
+ * Bike product data structure.
+ */
+interface Bike {
+  /** Unique identifier */
+  id: number;
+  /** Display name */
+  name: string;
+  /** Price in USD */
+  price: number;
+  /** Image URL */
+  image: string;
+  /** Product category */
+  category: string;
+}
+
+/** Static catalog of available bikes */
+const bikes: Bike[] = [
   {
     id: 1,
     name: 'Mountain Bike Pro',
@@ -48,13 +65,29 @@ const bikes = [
   },
 ];
 
+/**
+ * Home page component for the Bike Store application.
+ *
+ * Displays a navigation bar, hero section, category grid, product catalog,
+ * feature highlights, and footer. Manages shopping cart state locally.
+ *
+ * @returns The main store page layout
+ */
 export default function Home() {
   const [cart, setCart] = useState<number[]>([]);
 
+  /**
+   * Adds a bike to the shopping cart.
+   * @param bikeId - The ID of the bike to add
+   */
   const addToCart = (bikeId: number) => {
     setCart([...cart, bikeId]);
   };
 
+  /**
+   * Calculates the total price of all items in the cart.
+   * @returns The sum of prices for all bikes in the cart
+   */
   const getTotalPrice = () => {
     return cart.reduce((total, bikeId) => {
       const bike = bikes.find(b => b.id === bikeId);

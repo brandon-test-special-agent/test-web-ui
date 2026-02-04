@@ -1,14 +1,42 @@
 import Image from "next/image";
 
+/**
+ * Props for the BikeCard component.
+ */
 interface BikeCardProps {
+  /** Unique identifier for the bike */
   id: number;
+  /** Display name of the bike */
   name: string;
+  /** Price of the bike in USD */
   price: number;
+  /** URL of the bike image */
   image: string;
+  /** Category/type of the bike (e.g., "Off-Road", "Speed", "Urban") */
   category: string;
+  /** Callback function invoked when the user clicks "Add to cart" */
   onAddToCart: (id: number) => void;
 }
 
+/**
+ * Displays a bike product card with image, name, price, category badge,
+ * and an "Add to cart" button.
+ *
+ * @param props - The component props
+ * @returns A styled product card component
+ *
+ * @example
+ * ```tsx
+ * <BikeCard
+ *   id={1}
+ *   name="Mountain Bike Pro"
+ *   price={899}
+ *   image="https://example.com/bike.jpg"
+ *   category="Off-Road"
+ *   onAddToCart={(id) => console.log(`Added bike ${id} to cart`)}
+ * />
+ * ```
+ */
 export default function BikeCard({
   id,
   name,
