@@ -1,0 +1,102 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@6.1.0
+
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:22.19
+    resource_class: medium
+
+jobs:
+  install:
+    executor: node-executor
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: pnpm
+          cache-path: ~/.pnpm-store
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+            - .next
+
+  lint:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run ESLint
+          command: pnpm run lint
+
+  test:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run Jest tests
+          command: pnpm run test:run
+      - store_test_results:
+          path: junit.xml
+      - store_artifacts:
+          path: junit.xml
+
+  build:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Next.js application
+          command: pnpm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .next
+      - store_artifacts:
+          path: .next
+          destination: next-build
+
+  # deploy:
+  #   executor: node-executor
+  #   steps:
+  #     - checkout
+  #     - attach_workspace:
+  #         at: .
+  #     - run:
+  #         name: Deploy application
+  #         command: |
+  #           # Add your deployment commands here
+  #           # Example: npm run deploy
+  #           # or use platform-specific CLI tools (Vercel, AWS, etc.)
+  #           echo "Configure deployment for your platform"
+
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - install
+      - lint:
+          requires:
+            - install
+      - test:
+          requires:
+            - install
+      - build:
+          requires:
+            - install
+      # - deploy:
+      #     requires:
+      #       - lint
+      #       - test
+      #       - build
+      #     filters:
+      #       branches:
+      #         only: main
