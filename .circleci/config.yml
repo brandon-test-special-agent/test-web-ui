@@ -9,8 +9,26 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Plan deployment
+          command: |
+            circleci run release plan "${CIRCLE_JOB}" \
+              --environment-name="default" \
+              --component-name="${CIRCLE_PROJECT_REPONAME}" \
+              --target-version="${TARGET_VERSION}"
+      - run:
           name: Perform deployment
           command: kubectl set image deployment/my-app my-app=my-registry/my-app:${TARGET_VERSION} # TODO: add deployment logic
+      - run:
+          name: Update deployment status to running
+          command: circleci run release update "${CIRCLE_JOB}" --status=RUNNING
+      - run:
+          name: Update deployment status to success
+          command: circleci run release update "${CIRCLE_JOB}" --status=SUCCESS
+          when: on_success
+      - run:
+          name: Update deployment status to failed
+          command: circleci run release update "${CIRCLE_JOB}" --status=FAILED
+          when: on_fail
   cancel-deploy:
     docker:
       - image: cimg/base:stable
